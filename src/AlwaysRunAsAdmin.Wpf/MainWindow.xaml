@@ -1,0 +1,57 @@
+﻿<Window x:Class="AlwaysRunAsAdmin.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlwaysRunAsAdmin.Wpf"
+        mc:Ignorable="d"
+        Background="WhiteSmoke"
+        Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" DataContext="{DynamicResource Provider}">
+    <Window.Resources>
+        <local:AlwaysRunAsAdminProvider x:Key="Provider"/>
+    </Window.Resources>
+    <Grid Margin="10" DataContext="{Binding ViewModel}">
+        <GroupBox Header="Programs">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <ListBox
+                    ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding Current, Mode=TwoWay}"
+                    HorizontalContentAlignment="Stretch"
+                    Margin="3" 
+                    Grid.Column="0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Filepath}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Button Margin="3" Grid.Row="0" Content="Add" Command="{Binding AddCommand}"/>
+                    <Button Margin="3" Grid.Row="1" Content="Edit" Command="{Binding EditCommand}"/>
+                    <Button Margin="3" Grid.Row="2" Content="Remove" Command="{Binding RemoveCommand}"/>
+                    <Button Margin="3" Grid.Row="3" Content="Clear" Command="{Binding ClearCommand}"/>
+                    <Button Margin="3" Grid.Row="5" Content="Refresh" Command="{Binding RefreshCommand}"/>
+                    <Button Margin="3" Grid.Row="6" Content="Apply" Command="{Binding ApplyCommand}"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
