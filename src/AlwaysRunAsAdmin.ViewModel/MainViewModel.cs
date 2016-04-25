@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -109,6 +110,12 @@ namespace AlwaysRunAsAdmin
     protected override AppPathViewModel CreateNew()
     {
       return new AppPathViewModel();
+    }
+
+    protected override void InternalOnListChanged(ListChangedType type)
+    {
+      base.InternalOnListChanged(type);
+      mApplyCommand.Refresh();
     }
   }
 }

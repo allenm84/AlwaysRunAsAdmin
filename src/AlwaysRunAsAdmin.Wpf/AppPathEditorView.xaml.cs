@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace AlwaysRunAsAdmin.Wpf
 {
@@ -25,9 +26,18 @@ namespace AlwaysRunAsAdmin.Wpf
       InitializeComponent();
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private void btnBrowseFilepath_Click(object sender, RoutedEventArgs e)
     {
-
+      var dlg = new OpenFileDialog();
+      dlg.CheckFileExists = true;
+      dlg.CheckPathExists = true;
+      dlg.Filter = "Applications (*.exe) | *.exe";
+      dlg.Multiselect = false;
+      dlg.RestoreDirectory = true;
+      if (dlg.ShowDialog(this).GetValueOrDefault())
+      {
+        txtFilepath.Text = dlg.FileName;
+      }
     }
   }
 }

@@ -30,7 +30,7 @@
                     Margin="3" 
                     Grid.Column="1" 
                     Content=". . ." 
-                    Click="Button_Click"/>
+                    Click="btnBrowseFilepath_Click"/>
             </Grid>
         </GroupBox>
         <Grid Grid.Row="1">

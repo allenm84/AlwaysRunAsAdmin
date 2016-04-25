@@ -1,0 +1,49 @@
+﻿<Window x:Class="AlwaysRunAsAdmin.Wpf.ConfirmRefreshView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlwaysRunAsAdmin.Wpf"
+        mc:Ignorable="d"
+        local:WindowCloseBehavior.AcceptButton="{Binding ElementName=btnYes}"
+        local:WindowCloseBehavior.CancelButton="{Binding ElementName=btnNo}"
+        Background="WhiteSmoke"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="Height"
+        Title="{Binding Caption, FallbackValue=Confirm}" Height="Auto" Width="300">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <TextBlock 
+            Margin="3" 
+            Grid.Row="0" 
+            TextWrapping="Wrap"
+            Text="{Binding Message}"/>
+        <CheckBox 
+            Margin="3" 
+            Grid.Row="1" 
+            Content="Save Changes" 
+            IsChecked="{Binding SaveChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" MinWidth="80"/>
+                <ColumnDefinition Width="Auto" MinWidth="80"/>
+            </Grid.ColumnDefinitions>
+            <Button 
+                x:Name="btnYes"
+                Content="Yes" 
+                Margin="3" 
+                Grid.Column="1" 
+                Command="{Binding YesCommand}"/>
+            <Button 
+                x:Name="btnNo"
+                Content="No" 
+                Margin="3" 
+                Grid.Column="2" 
+                Command="{Binding NoCommand}"/>
+        </Grid>
+    </Grid>
+</Window>

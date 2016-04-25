@@ -10,12 +10,12 @@ namespace AlwaysRunAsAdmin.Wpf
 {
   public class AlwaysRunAsAdminProvider : IViewModelReceiver
   {
-    private readonly HashSet<BaseViewModel> mWaiting;
+    private readonly List<BaseViewModel> mWaiting;
     private readonly MainViewModel mViewModel;
 
     public AlwaysRunAsAdminProvider()
     {
-      mWaiting = new HashSet<BaseViewModel>();
+      mWaiting = new List<BaseViewModel>();
       mViewModel = new MainViewModel();
       ViewModelBroadcaster.Instance.Add(this);
     }
@@ -29,7 +29,16 @@ namespace AlwaysRunAsAdmin.Wpf
     {
       mWaiting.Add(viewModel);
       await viewModel.Completed;
-      mWaiting.Remove(mViewModel);
+      mWaiting.Remove(viewModel);
+    }
+
+    private async void Cleanup(BaseViewModel viewModel)
+    {
+      await Task.Yield();
+      if (mWaiting.Contains(viewModel))
+      {
+        viewModel.Dispose();
+      }
     }
 
     private async void ShowView(Window window, BaseViewModel viewModel)
@@ -40,10 +49,26 @@ namespace AlwaysRunAsAdmin.Wpf
       window.DataContext = viewModel;
       window.ShowDialog();
 
-      if (mWaiting.Contains(viewModel))
-      {
-        viewModel.ForceCompleted();
-      }
+      Cleanup(viewModel);
+    }
+
+    private async void ShowConfirmation(ConfirmViewModel confirm)
+    {
+      await Task.Yield();
+      var result = MessageBox.Show(confirm.Message, confirm.Caption, 
+        MessageBoxButton.YesNo, MessageBoxImage.Question);
+      var command = (result == MessageBoxResult.Yes)
+        ? confirm.YesCommand
+        : confirm.NoCommand;
+      command.Invoke(this);
+    }
+
+    private async void ShowAlert(AlertViewModel alert)
+    {
+      await Task.Yield();
+      MessageBox.Show(alert.Message, alert.Caption,
+        MessageBoxButton.OK, MessageBoxImage.Information);
+      alert.AcceptCommand.Invoke(this);
     }
 
     bool IViewModelReceiver.Receive(BaseViewModel viewModel)
@@ -52,6 +77,27 @@ namespace AlwaysRunAsAdmin.Wpf
       if (editor != null)
       {
         ShowView(new AppPathEditorView(), editor);
+        return true;
+      }
+
+      var confirmRefresh = viewModel as ConfirmRefreshViewModel;
+      if (confirmRefresh != null)
+      {
+        ShowView(new ConfirmRefreshView(), confirmRefresh);
+        return true;
+      }
+
+      var confirm = viewModel as ConfirmViewModel;
+      if (confirm != null)
+      {
+        ShowConfirmation(confirm);
+        return true;
+      }
+
+      var alert = viewModel as AlertViewModel;
+      if (alert != null)
+      {
+        ShowAlert(alert);
         return true;
       }
 
